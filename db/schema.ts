@@ -5,7 +5,13 @@ export const users = pgTable("users", {
 	createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
 		.defaultNow()
 		.notNull(),
-	displayname: text(),
-	email: text().notNull(),
-	picture: text(),
+	display_name: text("display_name"),
+	email: text("email").notNull(),
+	picture: text("picture"),
+	roleId: uuid("role_id").references(() => roles.id),
+});
+
+export const roles = pgTable("roles", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text().notNull(),
 });
