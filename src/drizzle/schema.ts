@@ -1,4 +1,4 @@
-import { pgTable, uuid, timestamp, text } from "drizzle-orm/pg-core";
+import { pgTable, uuid, timestamp, text, pgEnum } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
@@ -6,12 +6,16 @@ export const users = pgTable("users", {
 		.defaultNow()
 		.notNull(),
 	display_name: text("display_name"),
-	email: text("email").notNull(),
+	email: text("email").notNull().unique(),
 	picture: text("picture"),
-	roleId: uuid("role_id").references(() => roles.id),
+	roleId: uuid("role_id")
+		.references(() => roles.id)
+		.notNull(),
 });
+export type InsertUser = typeof users.$inferInsert;
 
+export const roleEnum = pgEnum("role", ["admin", "user", "guest"]);
 export const roles = pgTable("roles", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
-	name: text().notNull(),
+	role: roleEnum("role").notNull(),
 });

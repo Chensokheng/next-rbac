@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { loginWithOAuth } from "../../action/loginWithOAuth";
+
+import { loginWithOAuthAction } from "@/server-action/auth/loginWithOauth.actions";
 
 export default function page() {
 	return (
 		<div>
-			<button onClick={async () => await loginWithOAuth("github")}>
+			<button onClick={async () => await loginWithOAuthAction("github")}>
 				Login with Github
 			</button>
 		</div>

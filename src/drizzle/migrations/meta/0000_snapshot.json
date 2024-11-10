@@ -1,5 +1,5 @@
 {
-  "id": "85f52e4a-f77c-4c18-bc25-0072808d0967",
+  "id": "d0f0c607-c890-49d3-af61-d8bd9b5e49bf",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -15,9 +15,10 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "name": {
-          "name": "name",
-          "type": "text",
+        "role": {
+          "name": "role",
+          "type": "role",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         }
@@ -70,7 +71,7 @@
           "name": "role_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {},
@@ -90,13 +91,31 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.role": {
+      "name": "role",
+      "schema": "public",
+      "values": [
+        "admin",
+        "user",
+        "guest"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

@@ -1,22 +1,22 @@
 import React from "react";
-import LogoutButton from "./_components/logoutButton";
-import { getUser } from "@/src/services/users";
-import ListUsers from "./_components/ListUsers";
+import { redirect } from "next/navigation";
+import { getUserQuery } from "@/src/query/users/getUser.query";
 
 export default async function page() {
-	const getCachedUser = await getUser();
-	const user = await getCachedUser();
+	const { data: user, error } = await getUserQuery();
 
-	// if (user.role !== "admin") {
-	// 	redirect("/");
-	// }
+	if (user?.role !== "admin") {
+		redirect("/");
+	}
+
+	if (error?.code === 403 || error?.code === 401) {
+		redirect("/");
+	}
+
 
 	return (
 		<div>
-			<h1 className="text-2xl font-bold">My ID is {user.id}</h1>
-			{user.role === "admin" && <ListUsers />}
-
-			<LogoutButton />
+			{user?.display_name} {JSON.stringify(user)}
 		</div>
 	);
 }

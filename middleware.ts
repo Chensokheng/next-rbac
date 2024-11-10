@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "@/src/services/session";
+import { decrypt } from "@/src/third-party/auth-session";
 import { cookies } from "next/headers";
 
 // 1. Specify protected and public routes

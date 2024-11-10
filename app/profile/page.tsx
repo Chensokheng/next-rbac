@@ -1,8 +1,12 @@
 import React from "react";
-import { getUser } from "@/src/services/users";
+import { getUserQuery } from "@/src/query/users/getUser.query";
 
 export default async function page() {
-	const user = await getUser();
+	const { data: user, error } = await getUserQuery();
 
-	return <div>{JSON.stringify(user)}</div>;
+	return (
+		<div>
+			{user?.display_name} {JSON.stringify(user)} {JSON.stringify(error)}
+		</div>
+	);
 }
