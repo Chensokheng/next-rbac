@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-// The client you created from the Server-Side Auth instructions
 import { createClient } from "@/utils/supabase/server";
-import { createSession } from "@/src/services/session";
-import { createNewUser } from "@/src/services/users";
+import { userUseCase } from "@/src/use-case/user";
+import { createSession } from "@/src/auth/session";
+import { revalidateTag } from "next/cache";
 
 export async function GET(request: Request) {
 	const { searchParams, origin } = new URL(request.url);
@@ -12,28 +12,33 @@ export async function GET(request: Request) {
 
 	if (code) {
 		const supabase = await createClient();
-		const { error, data } = await supabase.auth.exchangeCodeForSession(
-			code
-		);
+		const {
+			error,
+			data: { user },
+		} = await supabase.auth.exchangeCodeForSession(code);
+		
 
-		if (!error) {
-			try {
-				let expiresAt: Date | undefined;
-				if (data?.session?.expires_at) {
-					expiresAt = new Date(data.session.expires_at * 1000);
-				}
-				if (data.user) {
-					const { id: userId } = await createNewUser({
-						id: data.user?.id,
-						email: data.user?.email ?? "",
-					});
-					await createSession(userId, expiresAt);
-				}
-				return NextResponse.redirect(`${origin}${next}`);
-			} catch {
+		if (!error && user) {
+			const response = await userUseCase.createNewLoginUser({
+				id: user?.id ?? "",
+				email: user?.email ?? "",
+
+				// update base on your repsonse oauth user this exampe is github
+				displayName: user?.user_metadata?.user_name ?? "",
+				picture: user?.user_metadata?.avatar_url ?? "",
+			});
+
+			if (response?.error) {
 				await supabase.auth.signOut();
-				return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+				return NextResponse.redirect(
+					`${origin}/auth/auth-code-error?message=${response.error.message}`
+				);
 			}
+
+			await createSession(response.data.id);
+			revalidateTag(response.data.id);
+
+			return NextResponse.redirect(`${origin}${next}`);
 		}
 	}
 
