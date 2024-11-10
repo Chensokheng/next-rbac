@@ -1,13 +1,22 @@
 "use client";
 
 import React from "react";
-
-import { loginWithOAuthAction } from "@/server-action/auth/loginWithOauth.actions";
+import { loginWithOAuth } from "./_action/login-with-oauth";
 
 export default function page() {
+	const handleLoginWithOAuth = async (provider: "google" | "github") => {
+		const response = await loginWithOAuth(provider);
+		if (response?.error) {
+			alert(response.error.message);
+		}
+		if (response?.data.url) {
+			window.location.href = response.data.url;
+		}
+	};
+
 	return (
 		<div>
-			<button onClick={async () => await loginWithOAuthAction("github")}>
+			<button onClick={() => handleLoginWithOAuth("github")}>
 				Login with Github
 			</button>
 		</div>

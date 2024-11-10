@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-
-import { createSession } from "@/src/services/session";
-import { _createNewLoginUserMutation } from "@/src/mutation/user/_createNewLoginUser.mutation";
+import { userUseCase } from "@/src/use-case/user";
+import { createSession } from "@/src/auth/session";
 
 export async function GET(request: Request) {
 	const { searchParams, origin } = new URL(request.url);
@@ -12,30 +11,25 @@ export async function GET(request: Request) {
 
 	if (code) {
 		const supabase = await createClient();
-		const { error, data } = await supabase.auth.exchangeCodeForSession(
-			code
-		);
+		const {
+			error,
+			data: { user },
+		} = await supabase.auth.exchangeCodeForSession(code);
 
-		if (!error) {
-			if (data.user) {
-				let expiresAt: Date | undefined;
-				if (data?.session?.expires_at) {
-					expiresAt = new Date(data.session.expires_at * 1000);
-				}
-				const { data: createdUser, error: createUserError } =
-					await _createNewLoginUserMutation(data.user);
+		if (!error && user) {
+			const response = await userUseCase.createNewLoginUser({
+				id: user?.id ?? "",
+				email: user?.email ?? "",
+			});
 
-				if (createUserError) {
-					await supabase.auth.signOut();
-					return NextResponse.redirect(
-						`${origin}/auth/auth-code-error`
-					);
-				}
-
-				if (createdUser?.id) {
-					await createSession(createdUser.id, expiresAt);
-				}
+			if (response?.error) {
+				await supabase.auth.signOut();
+				return NextResponse.redirect(
+					`${origin}/auth/auth-code-error?message=${response.error.message}`
+				);
 			}
+
+			await createSession(response.data.id);
 			return NextResponse.redirect(`${origin}${next}`);
 		}
 	}

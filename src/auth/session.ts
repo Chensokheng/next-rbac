@@ -11,7 +11,7 @@ type SessionPayload = {
 	expiresAt: Date;
 };
 
-export async function encrypt(payload: SessionPayload) {
+function encrypt(payload: SessionPayload) {
 	return new SignJWT(payload)
 		.setProtectedHeader({ alg: "HS256" })
 		.setIssuedAt()
@@ -56,6 +56,11 @@ export async function verifySession() {
 	return { isAuth: true, userId: session.userId as string };
 }
 
+export async function deleteSession() {
+	const cookiesStore = await cookies();
+	cookiesStore.delete("session");
+}
+
 // export async function updateSession() {
 // 	const session = cookies().get("session")?.value;
 // 	const payload = await decrypt(session);
@@ -73,8 +78,3 @@ export async function verifySession() {
 // 		path: "/",
 // 	});
 // }
-
-export async function deleteSession() {
-	const cookiesStore = await cookies();
-	cookiesStore.delete("session");
-}

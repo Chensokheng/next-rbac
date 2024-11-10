@@ -1,23 +1,22 @@
-import { UnauthorizedError } from "@/src/error/auth";
-import { ForbiddenError } from "@/src/error/auth";
-import { DatabaseError, InputValidationError } from "@/src/error/common";
+import {
+	UnauthorizedError,
+	ForbiddenError,
+	ValidationParamsError,
+} from "@/src/error";
 
 const generateError = (message: string, code: number) => {
 	return {
+		data: null,
 		error: {
 			message,
 			code,
 		},
-		data: null,
 	};
 };
 
 export const handleError = (error: Error, message: string) => {
-	if (error instanceof InputValidationError) {
+	if (error instanceof ValidationParamsError) {
 		return generateError(error.message, 422);
-	}
-	if (error instanceof DatabaseError) {
-		return generateError(error.message, 500);
 	}
 	if (error instanceof UnauthorizedError) {
 		return generateError(error.message, 401);

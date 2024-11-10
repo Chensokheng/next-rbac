@@ -4,4 +4,3 @@ export const ROLES = {
 	GUEST: "guest",
 	USER: "user",
 };
-
