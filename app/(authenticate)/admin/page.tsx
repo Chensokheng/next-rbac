@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 
 import RscUserLists from "./_components/rsc-user-lists";
 
+export const dynamic = "force-dynamic";
+
 export default async function page() {
 	const { data: user } = await userUseCase.getUserSession();
 
