@@ -5,7 +5,7 @@ export const users = pgTable("users", {
 	createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
 		.defaultNow()
 		.notNull(),
-	display_name: text("display_name"),
+	displayName: text("display_name"),
 	email: text("email").notNull().unique(),
 	picture: text("picture"),
 	roleId: uuid("role_id")

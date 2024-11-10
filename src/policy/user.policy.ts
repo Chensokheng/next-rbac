@@ -1,8 +1,8 @@
+import "server-only";
+
 import { verifySession } from "@/src/auth/session";
-import { db } from "@/src/drizzle";
-import { roles, users } from "@/src/drizzle/schema";
 import { ForbiddenError, UnauthorizedError } from "@/src/error";
-import { eq } from "drizzle-orm";
+import { commonPolicy } from "./common.policy";
 
 export const userPolicy = {
 	validateUpdateRole: async () => {
@@ -11,17 +11,19 @@ export const userPolicy = {
 		if (!isAuth || !userId) {
 			throw new UnauthorizedError("User is not authenticated");
 		}
-
-		const [user] = await db
-			.select({
-				role: roles.role,
-			})
-			.from(users)
-			.innerJoin(roles, eq(users.roleId, roles.id))
-			.where(eq(users.id, userId));
-
-		if (user.role !== "admin") {
+		if (!(await commonPolicy.isAdmin(userId))) {
 			throw new ForbiddenError("User is not authorized to update role");
+		}
+	},
+
+	validateGetAllUser: async () => {
+		const { isAuth, userId } = await verifySession();
+		if (!isAuth || !userId) {
+			throw new UnauthorizedError("User is not authenticated");
+		}
+
+		if (!(await commonPolicy.isAdmin(userId))) {
+			throw new ForbiddenError("User is not authorized to get all user");
 		}
 	},
 };

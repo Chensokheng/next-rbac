@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { userUseCase } from "@/src/use-case/user";
 import { createSession } from "@/src/auth/session";
+import { revalidateTag } from "next/cache";
 
 export async function GET(request: Request) {
 	const { searchParams, origin } = new URL(request.url);
@@ -15,11 +16,16 @@ export async function GET(request: Request) {
 			error,
 			data: { user },
 		} = await supabase.auth.exchangeCodeForSession(code);
+		
 
 		if (!error && user) {
 			const response = await userUseCase.createNewLoginUser({
 				id: user?.id ?? "",
 				email: user?.email ?? "",
+
+				// update base on your repsonse oauth user this exampe is github
+				displayName: user?.user_metadata?.user_name ?? "",
+				picture: user?.user_metadata?.avatar_url ?? "",
 			});
 
 			if (response?.error) {
@@ -30,6 +36,8 @@ export async function GET(request: Request) {
 			}
 
 			await createSession(response.data.id);
+			revalidateTag(response.data.id);
+
 			return NextResponse.redirect(`${origin}${next}`);
 		}
 	}
