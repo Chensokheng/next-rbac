@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/src/drizzle";
-import { food, roles, users } from "@/src/drizzle/schema";
+import { animals, farm, food, roles, users } from "@/src/drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export const insertTest3 = async () => {
@@ -22,8 +22,10 @@ export const insertTest3 = async () => {
 		}
 
 		await tx.insert(food).values({ name: "Test food " + Math.random() });
-		await tx.insert(food).values({ name: "Test2 food " + Math.random() });
-		await tx.insert(food).values({ name: "Test3 food " + Math.random() });
+		await tx.insert(farm).values({ name: "Test2 farm " + Math.random() });
+		await tx
+			.insert(animals)
+			.values({ name: "Test3 animals " + Math.random() });
 	});
 
 	const end = new Date();
