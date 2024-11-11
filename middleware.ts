@@ -7,8 +7,6 @@ const protectedRoutes = ["/dashboard", "/admin"];
 const publicRoutes = ["/auth"];
 
 export default async function middleware(req: NextRequest) {
-	console.log("middleware");
-
 	// 2. Check if the current route is protected or public
 	const path = req.nextUrl.pathname;
 	const isProtectedRoute = protectedRoutes.includes(path);
@@ -48,6 +46,6 @@ export const config = {
 		 * - /insert (newly added)
 		 * Feel free to modify this pattern to include more paths.
 		 */
-		"/((?!_next/static|_next/image|favicon.ico|/insert|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+		"/((?!_next/static|_next/image|favicon.ico|insert|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
 	],
 };

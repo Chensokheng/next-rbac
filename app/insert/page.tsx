@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { insertTest3 } from "./_action";
+import { insertTest3Drizzle } from "./_action";
 import { createClient } from "@/utils/supabase/client";
 import { insertTest3SupabaseFromAction } from "./_action/supabaseRpc";
 
@@ -12,8 +12,8 @@ export default function Page() {
 		string | null
 	>("");
 
-	const handleTest3Insert = async () => {
-		const res = await insertTest3();
+	const handleTest3InsertDrizzle = async () => {
+		const res = await insertTest3Drizzle();
 		setDuration(res);
 	};
 
@@ -39,7 +39,7 @@ export default function Page() {
 
 	return (
 		<div>
-			<button onClick={handleTest3Insert}>Insert Drizzle</button>
+			<button onClick={handleTest3InsertDrizzle}>Insert Drizzle</button>
 			<p>----------------------------------------------</p>
 			<button onClick={handleTest3InsertSupabaseFromUI}>
 				Insert Supabase RPC

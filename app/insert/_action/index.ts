@@ -4,7 +4,7 @@ import { db } from "@/src/drizzle";
 import { animals, farm, food, roles, users } from "@/src/drizzle/schema";
 import { eq } from "drizzle-orm";
 
-export const insertTest3 = async () => {
+export const insertTest3Drizzle = async () => {
 	const start = new Date();
 
 	await db.transaction(async (tx) => {
