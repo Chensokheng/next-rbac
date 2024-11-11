@@ -3,10 +3,12 @@ import { decrypt } from "@/src/auth/session";
 import { cookies } from "next/headers";
 
 // 1. Specify protected and public routes
-const protectedRoutes = ["/dashboard","/admin"];
+const protectedRoutes = ["/dashboard", "/admin"];
 const publicRoutes = ["/auth"];
 
 export default async function middleware(req: NextRequest) {
+	console.log("middleware");
+
 	// 2. Check if the current route is protected or public
 	const path = req.nextUrl.pathname;
 	const isProtectedRoute = protectedRoutes.includes(path);
@@ -43,8 +45,9 @@ export const config = {
 		 * - _next/static (static files)
 		 * - _next/image (image optimization files)
 		 * - favicon.ico (favicon file)
+		 * - /insert (newly added)
 		 * Feel free to modify this pattern to include more paths.
 		 */
-		"/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+		"/((?!_next/static|_next/image|favicon.ico|/insert|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
 	],
 };
