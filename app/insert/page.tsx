@@ -49,9 +49,9 @@ export default function Page() {
 			<button onClick={handleTest3InsertSupabaseFromAction}>
 				Insert Supabase RPC Action
 			</button>
-			<p>{duration}</p>
-			<p>{durationSupabase}</p>
-			<p>{durationSupabaseAction}</p>
+			<p>Drizzle: {duration}</p>
+			<p>Supabase RPC call from UI: {durationSupabase}</p>
+			<p>Supabase RPC call from Action: {durationSupabaseAction}</p>
 		</div>
 	);
 }
