@@ -19,3 +19,24 @@ export const roles = pgTable("roles", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	role: roleEnum("role").notNull(),
 });
+
+export const food = pgTable("food", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text("name").notNull(),
+});
+
+export type InsertFood = typeof food.$inferInsert;
+
+export const animals = pgTable("animals", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text("name").notNull(),
+});
+
+export type InsertAnimal = typeof animals.$inferInsert;
+
+export const farm = pgTable("farm", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text("name").notNull(),
+});
+
+export type InsertFarm = typeof farm.$inferInsert;

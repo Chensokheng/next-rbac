@@ -42,6 +42,7 @@ export const userDataAccess = {
 			[id],
 			{
 				tags: [id],
+				revalidate: 60,
 			}
 		);
 
