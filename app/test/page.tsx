@@ -1,5 +1,4 @@
 import { db } from "@/src/drizzle";
-import { roles } from "@/src/drizzle/schema";
 import React from "react";
 
 export default async function page() {
